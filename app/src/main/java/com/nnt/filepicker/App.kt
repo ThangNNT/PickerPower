@@ -10,7 +10,4 @@ class App: Application(), KodeinAware {
         import(androidXModule((this@App)))
         import(appModule)
     }
-
-    override fun onCreate() {
-        super.onCreate() }
 }

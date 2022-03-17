@@ -31,7 +31,6 @@ class ImageDataSourceImpl: ImageDataSource{
         val cursor = contentResolver.query(uri, projection, null, null, null)
         val buckets = HashMap<Int, Bucket>()
         buckets[BUCKET_ALL]= Bucket(BUCKET_ALL, "All", ArrayList<ImageModel>())
-        Log.d("AAAAAAAAAAAA", "${cursor?.moveToFirst()}")
 
         if (cursor?.moveToFirst() == true) {
             val idColumn = cursor.getColumnIndex(MediaStore.Images.Media._ID)
@@ -44,12 +43,11 @@ class ImageDataSourceImpl: ImageDataSource{
                 val bucketId = cursor.getInt(bucketIdColumn)
                 val bucketName = cursor.getString(bucketNameColumn)
                 val mimeType = cursor.getString(mimeTypeColumn)
+                //filter depend on mimetype
                 if((onlyMimeType.isNotEmpty()&& !onlyMimeType.contains(mimeType)) || (exceptMimeType.isNotEmpty() && exceptMimeType.contains(mimeType))){
                     continue
                 }
-
-                Log.d("AAAAAAAAAAAA", "$id, ${imageUri}, $mimeType, ${bucketId}, ${bucketName}")
-
+                //create model and add to bucket list
                 val imageModel = ImageModel(id, imageUri)
                 buckets[BUCKET_ALL]?.images?.add(imageModel)
                 if(buckets.containsKey(bucketId)){

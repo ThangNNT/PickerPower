@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="image"
+            type="com.nnt.filepicker.imagepicker.model.ImageModel" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <carbon.widget.ImageView
+            android:id="@+id/iv_photo"
+            android:padding="1dp"
+            app:carbon_cornerRadius="8dp"
+            loadImage="@{image.uri}"
+            android:scaleType="centerCrop"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_width="match_parent"
+            app:layout_constraintDimensionRatio="1:1"
+            android:layout_height="0dp"/>
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_selected"
+            showOrHide="@{image.selected}"
+            app:srcCompat="@drawable/ic_selected"
+            app:layout_constraintEnd_toEndOf="@id/iv_photo"
+            app:layout_constraintBottom_toBottomOf="@id/iv_photo"
+            android:layout_width="wrap_content"
+            android:layout_margin="4dp"
+            android:layout_height="wrap_content"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

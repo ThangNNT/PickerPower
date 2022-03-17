@@ -1,4 +1,4 @@
-package com.nnt.filepicker.imagepicker
+package com.nnt.filepicker.imagepicker.buckets
 
 import android.os.Bundle
 import android.util.Log
@@ -11,6 +11,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.nnt.filepicker.R
 import com.nnt.filepicker.databinding.FragmentBucketBinding
 import com.nnt.filepicker.extension.kodeinViewModelFromActivity
+import com.nnt.filepicker.imagepicker.GalleryActivity
+import com.nnt.filepicker.imagepicker.GalleryViewModel
+import com.nnt.filepicker.imagepicker.model.Bucket
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.kodein
 
@@ -18,7 +21,7 @@ class BucketFragment: Fragment(), KodeinAware {
     override val kodein by kodein()
     private val parentViewModel: GalleryViewModel by kodeinViewModelFromActivity()
     lateinit var binding: FragmentBucketBinding
-    private var adapter = BucketAdapter(emptyList())
+    private var adapter = BucketAdapter(emptyList(), ::onBucketSelected)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,12 +46,18 @@ class BucketFragment: Fragment(), KodeinAware {
 
     private fun setupObserver(){
         parentViewModel.imageBucket.observe(viewLifecycleOwner){
-            Log.d("============>", it.toString())
             adapter.updateData(it)
         }
     }
+
+    private fun onBucketSelected(bucket: Bucket){
+        if(requireActivity() is GalleryActivity){
+            (requireActivity() as GalleryActivity).onBucketSelected(bucket)
+        }
+    }
+
     companion object {
-        val TAG = BucketFragment::class.java.simpleName
+        val TAG: String = BucketFragment::class.java.simpleName
         fun newInstance() = BucketFragment()
     }
 }
