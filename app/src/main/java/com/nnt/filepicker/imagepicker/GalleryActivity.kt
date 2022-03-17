@@ -43,7 +43,7 @@ class GalleryActivity : AppCompatActivity(), KodeinAware {
     fun onBucketSelected(bucket: Bucket){
         viewModel.selectedImageIds.clear()
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, ImageFragment.newInstance(bucket), BucketFragment.TAG)
+            .replace(R.id.fragment_container, ImageFragment.newInstance(bucket, 1, 5), BucketFragment.TAG)
             .addToBackStack(ImageFragment.TAG)
             .commit()
         viewModel.selectBucket(bucket)

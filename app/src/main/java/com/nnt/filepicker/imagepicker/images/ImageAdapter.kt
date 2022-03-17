@@ -13,8 +13,11 @@ import com.nnt.filepicker.imagepicker.model.ImageModel
 class ImageAdapter(
     private var images: List<ImageModel>,
     private val initSelectedImage: Set<Long>,
-    private val onImageClicked: (image: ImageModel) -> Unit
+    private val maxCount: Int,
+    private val onImageClicked: (image: ImageModel) -> Unit,
+    private val onLimitSelectedImagesReach: () -> Unit
 ) : RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
+    private var currentSelectedCount = initSelectedImage.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = parent.context.getSystemService(LayoutInflater::class.java)
@@ -32,10 +35,30 @@ class ImageAdapter(
         }
         binding.ivSelected.isVisible = image.isSelected
         binding.root.setOnClickListener {
-            image.isSelected = !image.isSelected
-            onImageClicked.invoke(image)
-            binding.ivSelected.isVisible = image.isSelected
+            if(currentSelectedCount==maxCount){
+                if(!image.isSelected){
+                    onLimitSelectedImagesReach.invoke()
+                }
+                else {
+                    onChangeImageSelectStatus(binding, image)
+                }
+            }
+            else {
+                onChangeImageSelectStatus(binding, image)
+            }
         }
+    }
+
+    private fun onChangeImageSelectStatus(binding: ItemImageBinding, model: ImageModel){
+        model.isSelected = !model.isSelected
+        if(model.isSelected){
+            currentSelectedCount++
+        }
+        else {
+            currentSelectedCount--
+        }
+        onImageClicked.invoke(model)
+        binding.ivSelected.isVisible = model.isSelected
     }
 
     override fun getItemCount(): Int {

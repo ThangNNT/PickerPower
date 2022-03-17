@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.nnt.filepicker.R
 import com.nnt.filepicker.databinding.FragmentPhotoBinding
 import com.nnt.filepicker.extension.kodeinViewModelFromActivity
@@ -20,6 +21,8 @@ import org.kodein.di.android.x.kodein
 class ImageFragment: Fragment(), KodeinAware {
     override val kodein by kodein()
     private val parentViewModel: GalleryViewModel by kodeinViewModelFromActivity()
+    private val maxCount by lazy { arguments?.getInt(MAX_COUNT, 1)?:1 }
+    private val minCount by lazy { arguments?.getInt(MIN_COUNT, 1)?:1 }
     lateinit var binding: FragmentPhotoBinding
 
     override fun onCreateView(
@@ -47,10 +50,16 @@ class ImageFragment: Fragment(), KodeinAware {
                 adapter = ImageAdapter(
                     it.images,
                     parentViewModel.selectedImageIds,
-                    ::onImageClicked
+                    maxCount,
+                    ::onImageClicked,
+                    ::onLimitSelectedImagesReach
                 )
             }
         }
+    }
+
+    private fun onLimitSelectedImagesReach(){
+        Snackbar.make(binding.root, "Vuot qua so anh cho phep", Snackbar.LENGTH_LONG).show()
     }
 
     private fun onImageClicked(image: ImageModel){
@@ -62,9 +71,14 @@ class ImageFragment: Fragment(), KodeinAware {
         val TAG: String = ImageFragment::class.java.simpleName
         private const val BUCKET = "BUCKET"
 
-        fun newInstance(bucket: Bucket) = ImageFragment().apply {
+        private const val MAX_COUNT = "MAX_COUNT"
+        private const val MIN_COUNT = "MIN_COUNT"
+
+        fun newInstance(bucket: Bucket, minCount: Int, maxCount: Int) = ImageFragment().apply {
             arguments = Bundle().apply {
                 putSerializable(BUCKET, bucket)
+                putInt(MIN_COUNT, minCount)
+                putInt(MAX_COUNT, maxCount)
             }
         }
     }
